@@ -41,8 +41,9 @@ namespace TimeMultiplier {
 		internal static void SetMultiplier(float mul)
 		{
 			TimeOfDay tod = TimeOfDay.Instance;
-			mls.LogInfo($"");
+			mls.LogInfo($"Setting multiplier: {tod.globalTimeSpeedMultiplier} -> {mul}");
 			tod.globalTimeSpeedMultiplier = mul;
+			tod.globalTime = Mathf.Clamp(tod.globalTime, 0f, tod.globalTimeAtEndOfDay);
 			SyncGlobalTimeOnNetwork.Invoke(tod, new object[] {});
 		}
 	}
@@ -62,8 +63,6 @@ namespace TimeMultiplier {
 		public static void ReviveDeadPlayersPostfix(StartOfRound __instance)
 		{
 			Plugin.ResetMultiplier();
-			TimeOfDay tod = TimeOfDay.Instance;
-			tod.globalTime = Mathf.Clamp(tod.globalTime, 0f, tod.globalTimeAtEndOfDay);
 		}
 	}
 }
