@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 shopt -s nullglob
 
 OUTPUT_DIR=bin/Debug/netstandard2.1
-DLLS=(KeepTerminalOn TimeMultiplier)
+readarray -t DLLS <dlls.txt
 SUBDIRS=() ; for DLL in "${DLLS[@]}" ; do SUBDIRS+=("$(git rev-parse --show-toplevel)/${DLL}") ; done
+echo "DLLs: ${DLLS[*]}"
 
 RELEASE_NAME="LethalCompanyTweaks"
 
-MOD_UPDATE="$(git log -1 --pretty='%cd' --date=format:'%Y%m%d' -- "${SUBDIRS[@]}")"
+set -x
+
+MOD_UPDATE="$(git log -1 --pretty='%cd' --date=format:'%Y.%m.%d' -- "${SUBDIRS[@]}")"
 LC_VER="40"
 BEPINEX_VER="5.4.21"
-ARCHIVE_NAME="${RELEASE_NAME}-${MOD_UPDATE}-v${LC_VER}-${BEPINEX_VER}"
+ARCHIVE_NAME="${RELEASE_NAME}-v${LC_VER}-${MOD_UPDATE}-${BEPINEX_VER}"
 
 BEPINEX_ZIP="BepInEx_x64_${BEPINEX_VER}.0.zip"
 BEPINEX_URL="https://github.com/BepInEx/BepInEx/releases/download/v${BEPINEX_VER}/${BEPINEX_ZIP}"
